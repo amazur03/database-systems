@@ -1,4 +1,4 @@
-from app import db  # Import SQLAlchemy instance 'db' from the main app
+from models import db  # Import SQLAlchemy instance 'db' from the main app
 
 class Role(db.Model):
     """
@@ -11,7 +11,7 @@ class Role(db.Model):
 
     id = db.Column(db.BigInteger, primary_key=True)  # Unique identifier for each role (primary key)
     role_name = db.Column(db.String, unique=True, nullable=False)  # Role name, must be unique and cannot be null
-    permissions = db.Column(db.Binary, nullable=True)  # Permissions stored in binary format, optional field
+    permissions = db.Column(db.LargeBinary, nullable=True)  # Permissions stored in binary format, optional field
 
     users = db.relationship('User', back_populates='role', lazy='dynamic')  # Relationship with the User model; allows access to users assigned to this role
 

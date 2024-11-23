@@ -1,4 +1,4 @@
-from app import db # Import SQLAlchemy instance 'db' from the main app
+from models import db # Import SQLAlchemy instance 'db' from the main app
 from sqlalchemy.orm import validates # Import SQLAlchemy's validation decorator
 import re # Import regex module to validate email format
 
