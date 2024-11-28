@@ -15,12 +15,12 @@ class InventoryProduct(db.Model):
     difference = db.Column(db.BigInteger, nullable=False)  # Difference between counted and current stock
     user_id = db.Column(db.BigInteger, db.ForeignKey('users.id'), nullable=False)  # Foreign key to the users table
 
-
-    inventorys = db.relationship('Inventory', back_populates='inventory_products', cascade="all, delete-orphan")  # Relationship to inventory
-    products = db.relationship('Product', back_populates='inventory_products', cascade="all, delete-orphan")  # Relationship to product
-    users = db.relationship('User', back_populates='inventory_products', cascade="all, delete-orphan")  # Relationship to user
-
-
+    # Relationship to inventory
+    inventory = db.relationship('Inventory', back_populates='inventory_product')  
+    # Relationship to product
+    product = db.relationship('Product', back_populates='inventory_product')  
+    # Relationship to user
+    user = db.relationship('User', back_populates='inventory_product')  
 
     def __repr__(self):
         """

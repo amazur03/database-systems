@@ -13,7 +13,7 @@ class Unit(db.Model):
     percentage_of_the_stock = db.Column(db.Numeric, nullable=True)  # Percentage of stock filled by this unit
 
 
-    products = db.relationship('Product', back_populates='unit', cascade="all, delete-orphan")  # Relationship to products
+    product = db.relationship('Product', back_populates='unit')  # Relationship to products
 
     def __repr__(self):
         """

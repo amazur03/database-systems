@@ -14,8 +14,8 @@ class WarehouseMoveProduct(db.Model):
     quantity = db.Column(db.BigInteger, nullable=False)  # Quantity moved in the warehouse movement
 
 
-    warehouse_moves = db.relationship('WarehouseMove', back_populates='warehouse_move_product', cascade="all, delete-orphan")  # Relationship to warehouse_move
-    products = db.relationship('Product', back_populates='warehouse_move_product', cascade="all, delete-orphan")  # Relationship to product
+    warehouse_move = db.relationship('WarehouseMove', back_populates='warehouse_move_product')  # Relationship to warehouse_move
+    product = db.relationship('Product', back_populates='warehouse_move_product')  # Relationship to product
 
     def __repr__(self):
         """
