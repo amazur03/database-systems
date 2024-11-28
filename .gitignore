@@ -1,0 +1,35 @@
+# Wykluczenie katalogów wirtualnego środowiska Python
+venv/
+ENV/
+env/
+
+# Pliki cache Pythona
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Pliki logów
+*.log
+
+# Baza danych SQLite (jeśli używasz lokalnej bazy)
+*.sqlite3
+*.db
+
+# Pliki IDE
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Pliki systemowe
+.DS_Store
+Thumbs.db
+
+# Pliki testowe
+test_database.*
+
+# Kompilowane pliki i inne pliki tymczasowe
+*.egg-info/
+dist/
+build/
