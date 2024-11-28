@@ -21,9 +21,9 @@ class OperationLog(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)  # Timestamp of the operation, defaults to current time
     details = db.Column(db.Text)  # Additional details for the operation
 
-    user = db.relationship('User', back_populates='operation_logs')  # Relationship with the Users table
-    warehouse_move = db.relationship('WarehouseMove', back_populates='operation_logs')  # Relationship with the WarehouseMoves table
-    inventory = db.relationship('Inventory', back_populates='operation_logs')  # Relationship with the Inventory table
+    users = db.relationship('User', back_populates='operation_logs', cascade="all, delete-orphan")  # Relationship with the Users table
+    warehouse_moves = db.relationship('WarehouseMove', back_populates='operation_logs', cascade="all, delete-orphan")  # Relationship with the WarehouseMoves table
+    inventorys = db.relationship('Inventory', back_populates='operation_logs', cascade="all, delete-orphan")  # Relationship with the Inventory table
 
     def __repr__(self):
         """

@@ -16,7 +16,10 @@ class Product(db.Model):
     min_stock = db.Column(db.BigInteger, nullable=False)  # Minimum stock quantity, cannot be null
     current_stock = db.Column(db.BigInteger, nullable=False)  # Current stock quantity, cannot be null
 
-    unit = db.relationship('Unit', back_populates='products')  # Relationship with the Units table
+    inventory_products = db.relationship('InventoryProduct', back_populates='product', cascade="all, delete-orphan")
+    units = db.relationship('Unit', back_populates='product', cascade="all, delete-orphan")
+    warehouse_move_products = db.relationship('WarehouseMoveProduct', back_populates='product', cascade="all, delete-orphan")
+
 
     def __repr__(self):
         """

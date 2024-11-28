@@ -11,9 +11,9 @@ class Role(db.Model):
 
     id = db.Column(db.BigInteger, primary_key=True)  # Unique identifier for each role (primary key)
     role_name = db.Column(db.String, unique=True, nullable=False)  # Role name, must be unique and cannot be null
-    permissions = db.Column(db.LargeBinary, nullable=True)  # Permissions stored in binary format, optional field
+    permission = db.Column(db.LargeBinary, nullable=True)  # Permissions stored in binary format, optional field
 
-    users = db.relationship('User', back_populates='role', lazy='dynamic')  # Relationship with the User model; allows access to users assigned to this role
+    users = db.relationship('User', back_populates='role', lazy='dynamic', cascade="all, delete-orphan")  # Relationship with the User model; allows access to users assigned to this role
 
     def __repr__(self):
         """

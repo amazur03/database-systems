@@ -16,9 +16,9 @@ class InventoryProduct(db.Model):
     user_id = db.Column(db.BigInteger, db.ForeignKey('users.id'), nullable=False)  # Foreign key to the users table
 
 
-    inventory = db.relationship('Inventory', back_populates='inventory_products')  # Relationship to inventory
-    product = db.relationship('Product')  # Relationship to product
-    user = db.relationship('User')  # Relationship to user
+    inventorys = db.relationship('Inventory', back_populates='inventory_products', cascade="all, delete-orphan")  # Relationship to inventory
+    products = db.relationship('Product', back_populates='inventory_products', cascade="all, delete-orphan")  # Relationship to product
+    users = db.relationship('User', back_populates='inventory_products', cascade="all, delete-orphan")  # Relationship to user
 
 
 

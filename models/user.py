@@ -19,7 +19,10 @@ class User(db.Model):
     surname = db.Column(db.String, nullable=False)  # User's last name, cannot be null
     email = db.Column(db.String, unique=True, nullable=False)  # Email address, which must be unique and in a valid format
 
-    role = db.relationship('Role', back_populates='users')  # Relationship with the Roles table - allows access to the role assigned to the user
+    operation_logs = db.relationship('OperationLog', back_populates='user', cascade="all, delete-orphan")
+    roles = db.relationship('Role', back_populates='user', cascade="all, delete-orphan")  # Relationship with the Roles table - allows access to the role assigned to the user
+    warehouse_moves = db.relationship('WarehouseMove', back_populates='user', cascade="all, delete-orphan")
+    inventory_products = db.relationship('InventoryProduct', back_populates='user', cascade="all, delete-orphan")
 
     # Email verification using regex
     @validates('email')

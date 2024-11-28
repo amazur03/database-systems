@@ -15,7 +15,9 @@ class WarehouseMove(db.Model):
     implementation_date = db.Column(db.Date, nullable=False)  # Implementation date, cannot be null
     user_id = db.Column(db.BigInteger, db.ForeignKey('users.id'), nullable=False)  # Foreign key referencing the users table
 
-    user = db.relationship('User', back_populates='warehouse_moves')  # Relationship with the Users table
+    operation_logs = db.relationship('OperationLog', back_populates='warehouse_move', cascade="all, delete-orphan")
+    users = db.relationship('User', back_populates='warehouse_moves', cascade="all, delete-orphan")  # Relationship with the Users table
+    werahouse_move_products = db.relationship('WarehouseMoveProduct', back_populates='warehouse_move', cascade="all, delete-orphan")
 
     def __repr__(self):
         """

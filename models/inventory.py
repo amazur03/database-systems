@@ -12,8 +12,11 @@ class Inventory(db.Model):
     date = db.Column(db.Date, nullable=False)  # Date of the inventory session
 
 
-    inventory_products = db.relationship('InventoryProduct', back_populates='inventory')  # Relationship to inventory_products
-    operation_logs = db.relationship('OperationLog', back_populates='inventory')  # Relationship to operation_logs
+     # Relationship to InventoryProduct
+    inventory_products = db.relationship('InventoryProduct', back_populates='inventory', cascade="all, delete-orphan")
+
+    # Relationship to OperationLog
+    operation_logs = db.relationship('OperationLog', back_populates='inventory', cascade="all, delete-orphan")
 
     def __repr__(self):
         """
