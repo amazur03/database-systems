@@ -12,7 +12,7 @@ __pycache__/
 # Pliki logów
 *.log
 
-# Baza danych SQLite (jeśli używasz lokalnej bazy)
+# Baza danych SQLite
 *.sqlite3
 *.db
 
@@ -24,10 +24,7 @@ __pycache__/
 
 # Pliki systemowe
 .DS_Store
-Thumbs.db
-
-# Pliki testowe
-test_database.*
+Thumbs.dbs
 
 # Kompilowane pliki i inne pliki tymczasowe
 *.egg-info/
