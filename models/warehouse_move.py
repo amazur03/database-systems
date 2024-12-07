@@ -17,7 +17,7 @@ class WarehouseMove(db.Model):
 
     operation_log = db.relationship('OperationLog', back_populates='warehouse_move')
     user = db.relationship('User', back_populates='warehouse_move')  # Relationship with the Users table
-    werahouse_move_product = db.relationship('WarehouseMoveProduct', back_populates='warehouse_move', cascade="all, delete-orphan")
+    warehouse_move_product = db.relationship('WarehouseMoveProduct', back_populates='warehouse_move', cascade="all, delete-orphan")
 
     def __repr__(self):
         """
