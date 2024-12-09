@@ -2,8 +2,8 @@ from flask import Flask
 from flask_migrate import Migrate
 from models import db
 from flask_admin import Admin
-from flask_admin_views import RoleModelView, UnitModelView
-from models import Role, Unit
+from flask_admin_views import RoleModelView, UnitModelView, ProductModelView, UserModelView
+from models import Role, Unit, Product, User
 
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -25,6 +25,8 @@ def configure_flask_admin(app):
     admin = Admin(app, name='Management Panel')  # The 'Management Panel' will be the name displayed in the admin panel
     admin.add_view(RoleModelView(Role, db.session, endpoint='admin_role', name='Role'))
     admin.add_view(UnitModelView(Unit, db.session, endpoint='admin_unit', name='Unit'))
+    admin.add_view(ProductModelView(Product, db.session, endpoint='admin_product', name='Product'))
+    admin.add_view(UserModelView(User, db.session, endpoint='admin_user', name='Users'))
 
 def configure_app(app):
     # Set the secret key to use for the session, change this later

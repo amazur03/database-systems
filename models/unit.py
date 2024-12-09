@@ -10,10 +10,10 @@ class Unit(db.Model):
 
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)  # Unique identifier for each unit
     name = db.Column(db.String, nullable=False, unique=True)  # Name of the unit
-    percentage_of_the_stock = db.Column(db.Numeric, nullable=True)  # Percentage of stock filled by this unit
+    percentage_of_the_stock = db.Column(db.Numeric(precision=5, scale=2), nullable=True)  # Percentage of stock filled by this unit
 
 
-    product = db.relationship('Product', back_populates='unit')  # Relationship to products
+    product = db.relationship('Product', back_populates='unit', cascade='all', passive_deletes=True)  # Relationship to products
 
     def __repr__(self):
         """

@@ -17,7 +17,7 @@ class Product(db.Model):
     current_stock = db.Column(db.BigInteger, nullable=False)  # Current stock quantity, cannot be null
 
     inventory_product = db.relationship('InventoryProduct', back_populates='product')
-    unit = db.relationship('Unit', back_populates='product', single_parent=True, cascade="all, delete-orphan")
+    unit = db.relationship('Unit', back_populates='product', single_parent=True, cascade='all', passive_deletes=True)
     warehouse_move_product = db.relationship('WarehouseMoveProduct', back_populates='product')
 
 
