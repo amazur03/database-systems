@@ -2,8 +2,8 @@ from flask import Flask
 from flask_migrate import Migrate
 from models import db
 from flask_admin import Admin
-from flask_admin_views import RoleModelView, UnitModelView, ProductModelView, UserModelView
-from models import Role, Unit, Product, User
+from models import Role, Unit, Product, User, WarehouseMove, WarehouseMoveProduct, Inventory, InventoryProduct
+from admin_view import ProductModelView, RoleModelView, UnitModelView, UserModelView, WarehouseMoveModelView, WarehouseMoveProductModelView, UserModelView, InventoryModelView, InventoryProductModelView
 
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -23,10 +23,14 @@ def register_extensions(app):
 
 def configure_flask_admin(app):
     admin = Admin(app, name='Management Panel')  # The 'Management Panel' will be the name displayed in the admin panel
-    admin.add_view(RoleModelView(Role, db.session, endpoint='admin_role', name='Role'))
-    admin.add_view(UnitModelView(Unit, db.session, endpoint='admin_unit', name='Unit'))
-    admin.add_view(ProductModelView(Product, db.session, endpoint='admin_product', name='Product'))
-    admin.add_view(UserModelView(User, db.session, endpoint='admin_user', name='Users'))
+    admin.add_view(UserModelView(User, db.session, endpoint='admin_user', name='Users', category='Users Menagment'))
+    admin.add_view(RoleModelView(Role, db.session, endpoint='admin_role', name='Role', category='Users Menagment'))
+    admin.add_view(ProductModelView(Product, db.session, endpoint='admin_product', name='Product', category='Product Menagment'))
+    admin.add_view(UnitModelView(Unit, db.session, endpoint='admin_unit', name='Unit', category='Product Menagment'))
+    admin.add_view(WarehouseMoveModelView(WarehouseMove, db.session, endpoint='admin_warehous_move', name='Warehouse Moves', category='Warehouse Menagment'))
+    admin.add_view(WarehouseMoveProductModelView(WarehouseMoveProduct, db.session, endpoint='admin_warehous_move_prod', name='Warehous Moves Products', category='Warehouse Menagment'))
+    admin.add_view(InventoryModelView(Inventory, db.session, endpoint='admin_inventory', name='Inventory', category='Inventory Menagment'))
+    admin.add_view(InventoryProductModelView(InventoryProduct, db.session, endpoint='admin_inventory_product', name='Inventory Products', category='Inventory Menagment'))
 
 def configure_app(app):
     # Set the secret key to use for the session, change this later
