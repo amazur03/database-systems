@@ -9,7 +9,7 @@ class Role(db.Model):
 
     __tablename__ = 'roles'  # Defines the table name in the database
 
-    id = db.Column(db.BigInteger, primary_key=True)  # Unique identifier for each role (primary key)
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)  # Unique identifier for each role (primary key)
     role_name = db.Column(db.String, unique=True, nullable=False)  # Role name, must be unique and cannot be null
     permission = db.Column(db.LargeBinary, nullable=True)  # Permissions stored in binary format, optional field
 

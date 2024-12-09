@@ -1,6 +1,9 @@
 from flask import Flask
 from flask_migrate import Migrate
 from models import db
+from flask_admin import Admin
+from flask_admin_views import RoleModelView, UnitModelView
+from models import Role, Unit
 
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -17,6 +20,12 @@ def register_extensions(app):
     migrate.init_app(app, db)
     app.logger.info('Migration initialized')
 
+
+def configure_flask_admin(app):
+    admin = Admin(app, name='Management Panel')  # The 'Management Panel' will be the name displayed in the admin panel
+    admin.add_view(RoleModelView(Role, db.session, endpoint='admin_role', name='Role'))
+    admin.add_view(UnitModelView(Unit, db.session, endpoint='admin_unit', name='Unit'))
+
 def configure_app(app):
     # Set the secret key to use for the session, change this later
     app.config['SECRET_KEY'] = 'secret-key'
@@ -32,6 +41,10 @@ def create_app():
     try:
         # Register extensions
         register_extensions(app)
+
+        # Build admin panel from flask-admin
+        configure_flask_admin(app)
+
         app.logger.info('App created successfully')
         return app
     except Exception as e:
