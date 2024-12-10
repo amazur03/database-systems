@@ -6,7 +6,6 @@ db = SQLAlchemy()
 # Importowanie modeli
 from .product import Product
 from .user import User
-from .role import Role
 from .unit import Unit
 from .inventory import Inventory
 from .inventory_product import InventoryProduct

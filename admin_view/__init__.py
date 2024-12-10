@@ -1,4 +1,3 @@
-from .role_view import RoleModelView
 from .unit_view import UnitModelView
 from .product_view import ProductModelView
 from .user_view import UserModelView
