@@ -8,7 +8,7 @@ class WarehouseMoveProduct(db.Model):
 
     __tablename__ = 'warehouse_moves_products'
 
-    id = db.Column(db.BigInteger, primary_key=True)  # Unique identifier for each warehouse movement-product link
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)  # Unique identifier for each warehouse movement-product link
     warehouse_move_id = db.Column(db.BigInteger, db.ForeignKey('warehouse_moves.id'), nullable=False)  # Foreign key to warehouse_moves
     product_id = db.Column(db.BigInteger, db.ForeignKey('products.id'), nullable=False)  # Foreign key to products
     quantity = db.Column(db.BigInteger, nullable=False)  # Quantity moved in the warehouse movement

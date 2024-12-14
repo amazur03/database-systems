@@ -12,7 +12,7 @@ class User(db.Model, UserMixin):
     
     __tablename__ = 'users'  # Defines the table name in the database
 
-    id = db.Column(db.BigInteger, primary_key=True)  # Unique identifier for each user (primary key)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)  # Unique identifier for each user (primary key)
     username = db.Column(db.String, unique=True, nullable=False)  # Username, which must be unique and cannot be null
     password = db.Column(db.String, nullable=False)  # Password, stored as a string, cannot be null
     name = db.Column(db.String, nullable=False)  # User's first name, cannot be null

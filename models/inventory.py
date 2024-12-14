@@ -8,9 +8,9 @@ class Inventory(db.Model):
 
     __tablename__ = 'inventory'
 
-    id = db.Column(db.BigInteger, primary_key=True)  # Unique identifier for each inventory session
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)  # Unique identifier for each inventory session
     date = db.Column(db.Date, nullable=False)  # Date of the inventory session
-
+    description = db.Column(db.String, nullable=False)
 
      # Relationship to InventoryProduct
     inventory_product = db.relationship('InventoryProduct', back_populates='inventory')

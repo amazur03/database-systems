@@ -4,7 +4,7 @@ from models import db, Unit
 class UnitModelView(ModelView):
     """Admin view for the Unit model."""
     column_list = ('id', 'name', 'percentage_of_the_stock')
-    form_columns = ('id', 'name', 'percentage_of_the_stock')
+    form_columns = ('name', 'percentage_of_the_stock')
     column_filters = ['name']
     column_searchable_list = ['name']
     column_formatters = {

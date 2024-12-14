@@ -7,7 +7,7 @@ from wtforms import SelectField, validators
 class WarehouseMoveModelView(ModelView):
     """Admin view for the WarehouseMove model."""
     column_list = ('id', 'move_type', 'order_date', 'implementation_date', 'user.username')
-    form_columns = ('id', 'move_type', 'order_date', 'implementation_date', 'user')
+    form_columns = ('move_type', 'order_date', 'implementation_date', 'user')
     column_filters = ['move_type', 'order_date', 'implementation_date', 'user.username']
     column_searchable_list = ['move_type', 'user.username']
     column_sortable_list = ['move_type', 'order_date', 'implementation_date']

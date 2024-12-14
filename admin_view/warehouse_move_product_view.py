@@ -7,7 +7,7 @@ from wtforms import IntegerField, validators
 class WarehouseMoveProductModelView(ModelView):
     """Admin view for the WarehouseMoveProduct model."""
     column_list = ('id', 'warehouse_move.move_type', 'product.name', 'quantity')
-    form_columns = ('id', 'warehouse_move', 'product', 'quantity')
+    form_columns = ('warehouse_move', 'product', 'quantity')
     column_filters = ['warehouse_move.move_type', 'product.name']
     column_searchable_list = ['warehouse_move.move_type', 'product.name']
     column_sortable_list = ['warehouse_move.move_type', 'product.name', 'quantity']

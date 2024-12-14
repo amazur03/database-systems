@@ -8,12 +8,12 @@ class InventoryProduct(db.Model):
 
     __tablename__ = 'inventory_products'
 
-    id = db.Column(db.BigInteger, primary_key=True)  # Unique identifier for each inventory-product link
-    inventory_id = db.Column(db.BigInteger, db.ForeignKey('inventory.id'), nullable=False)  # Foreign key to the inventory table
-    product_id = db.Column(db.BigInteger, db.ForeignKey('products.id'), nullable=False)  # Foreign key to the products table
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)  # Unique identifier for each inventory-product link
+    inventory_id = db.Column(db.Integer, db.ForeignKey('inventory.id'), nullable=False)  # Foreign key to the inventory table
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)  # Foreign key to the products table
     counted_quantity = db.Column(db.BigInteger, nullable=False)  # Quantity counted during inventory
     difference = db.Column(db.BigInteger, nullable=False)  # Difference between counted and current stock
-    user_id = db.Column(db.BigInteger, db.ForeignKey('users.id'), nullable=False)  # Foreign key to the users table
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)  # Foreign key to the users table
 
     # Relationship to inventory
     inventory = db.relationship('Inventory', back_populates='inventory_product')  

@@ -11,7 +11,7 @@ class OperationLog(db.Model):
     
     __tablename__ = 'operation_logs'
 
-    id = db.Column(db.BigInteger, primary_key=True)  # Unique identifier for each operation log (primary key)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)  # Unique identifier for each operation log (primary key)
     operation_type = db.Column(db.String, nullable=False)  # Type of operation, cannot be null
     user_id = db.Column(db.BigInteger, db.ForeignKey('users.id'), nullable=False)  # Foreign key referencing the users table
     warehouse_move_id = db.Column(db.BigInteger, db.ForeignKey('warehouse_moves.id'), nullable=True)  # Nullable foreign key referencing warehouse moves

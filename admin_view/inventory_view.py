@@ -5,8 +5,8 @@ from wtforms_sqlalchemy.fields import QuerySelectField
 from wtforms import SelectField, validators
 
 class InventoryModelView(ModelView):
-    column_list = ('id', 'date')
-    form_columns = ('id', 'date')
-    column_filters = ['id', 'date']
-    column_searchable_list = ['id', 'date']
-    column_sortable_list = ['id', 'date']
+    column_list = ('id', 'description', 'date')
+    form_columns = ('description', 'date')
+    column_filters = ['date']
+    column_searchable_list = ['date']
+    column_sortable_list = ['date']

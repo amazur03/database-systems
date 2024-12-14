@@ -6,49 +6,49 @@ from wtforms import IntegerField, validators
 
 class InventoryProductModelView(ModelView):
     """Admin view for the InventoryProduct model."""
-    
+
     # Columns to be displayed in the list view (index view)
-    column_list = ('id', 'inventory_id', 'product.name', 'counted_quantity', 'difference', 'user.username')
+    column_list = ('id', 'inventory', 'product', 'counted_quantity', 'difference', 'user')
 
     # Columns to be included in the add/edit form
-    form_columns = ('id', 'inventory_id', 'product', 'counted_quantity', 'user_id')  # Change product_name to product
+    form_columns = ('inventory', 'product', 'counted_quantity', 'user')
 
     # Columns to be searchable in the list view
-    column_searchable_list = ['inventory_id', 'product.name']  # Use product name
+    column_searchable_list = ['inventory.id', 'product.name']
 
     # Columns that can be filtered in the list view
-    column_filters = ['inventory_id', 'product.name', 'user.username']  # Use product name
+    column_filters = ['inventory.id', 'product.name', 'user.username']
 
     # Columns that are sortable
-    column_sortable_list = ['inventory_id', 'product.name', 'counted_quantity', 'difference']  # Use product name
+    column_sortable_list = ['inventory.id', 'product.name', 'counted_quantity', 'difference']
 
     # Extra fields for relationships with other models (Inventory, Product, and User)
     form_extra_fields = {
-        'inventory_id': QuerySelectField(
-            'Inventory',  # Label for the field
-            query_factory=lambda: db.session.query(Inventory).all(),  # Fetch Inventory records
+        'inventory': QuerySelectField(
+            'Inventory',
+            query_factory=lambda: db.session.query(Inventory).order_by(Inventory.date.desc()).all(),
             widget=Select2Widget(),
-            get_label=lambda inventory: f"ID: {inventory.id} - {inventory.date}"  # Show Inventory ID and Date in select
+            get_label=lambda inventory: f"ID: {inventory.id} - {inventory.description} ({inventory.date})"
         ),
-        'product': QuerySelectField(  # Changed to 'product' field
-            'Product',  # Label for the field
-            query_factory=lambda: db.session.query(Product).all(),  # Fetch Product records
+        'product': QuerySelectField(
+            'Product',
+            query_factory=lambda: db.session.query(Product).order_by(Product.name).all(),
             widget=Select2Widget(),
-            get_label=lambda product: product.name  # Show product name in the select
+            get_label=lambda product: product.name
         ),
-        'user_id': QuerySelectField(
-            'User',  # Label for the field
-            query_factory=lambda: db.session.query(User).all(),  # Fetch User records
+        'user': QuerySelectField(
+            'User',
+            query_factory=lambda: db.session.query(User).order_by(User.username).all(),
             widget=Select2Widget(),
-            get_label=lambda user: user.username  # Show username in the select
-        ),
+            get_label=lambda user: user.username
+        )
     }
 
     # Formatter for displaying product name and user in a readable format
     column_formatters = {
-        'user.username': lambda view, context, model, name: model.user.username if model.user else 'N/A',
-        'product.name': lambda view, context, model, name: model.product.name if model.product else 'N/A',  # Correct field path
-        'inventory.date': lambda view, context, model, name: model.inventory.date.strftime('%Y-%m-%d') if model.inventory else 'N/A',
+        'user': lambda view, context, model, name: model.user.username if model.user else 'N/A',
+        'product': lambda view, context, model, name: model.product.name if model.product else 'N/A',
+        'inventory': lambda view, context, model, name: model.inventory.date.strftime('%Y-%m-%d') if model.inventory else 'N/A',
     }
 
     # Custom validation for form fields
@@ -60,24 +60,25 @@ class InventoryProductModelView(ModelView):
 
     # Logic before saving changes to the model
     def on_model_change(self, form, model, is_created):
-        # Get the current stock quantity for the product
-        product = db.session.query(Product).get(model.product_id)
+        # Fetch product by its ID (this assumes the product is already selected in the form)
+        product = model.product
+        if not product:
+            raise ValueError("Selected product does not exist.")
+        
+        # Calculate the difference between counted and current stock
+        model.difference = model.counted_quantity - product.current_stock
 
-        if product:
-            # Calculate the difference between the counted quantity and the current stock
-            model.difference = model.counted_quantity - product.current_stock  # Assuming `current_stock` is the field for the product's current stock
-        else:
-            model.difference = 0  # If product not found, set difference to 0
-
-        # Continue with saving the model
+        # Proceed with saving the changes
         return super(InventoryProductModelView, self).on_model_change(form, model, is_created)
 
     # Prefill the form with existing model data (e.g., for editing an existing inventory product)
     def _on_form_prefill(self, form, id):
+        # Fetch the InventoryProduct instance
         inventory_product = db.session.query(InventoryProduct).get(id)
         if inventory_product:
-            form.inventory_id.data = inventory_product.inventory_id
-            form.product.data = inventory_product.product  # Use the actual Product object
+            # Prefill the form fields with the existing data
+            form.inventory.data = inventory_product.inventory
+            form.product.data = inventory_product.product
             form.counted_quantity.data = inventory_product.counted_quantity
-            form.user_id.data = inventory_product.user_id
+            form.user.data = inventory_product.user
         return super(InventoryProductModelView, self)._on_form_prefill(form, id)

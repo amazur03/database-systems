@@ -6,7 +6,7 @@ from wtforms_sqlalchemy.fields import QuerySelectField
 class ProductModelView(ModelView):
     """Admin view for the Product model"""
     column_list = ('id', 'name', 'unit.name', 'max_stock', 'min_stock', 'current_stock')
-    form_columns = ('id', 'name', 'unit', 'max_stock', 'min_stock', 'current_stock')
+    form_columns = ('name', 'unit', 'max_stock', 'min_stock', 'current_stock')
     form_extra_fields = {
         'unit': QuerySelectField(
             'Unit',

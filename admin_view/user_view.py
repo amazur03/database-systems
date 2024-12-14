@@ -8,12 +8,12 @@ from wtforms import validators
 class UserModelView(ModelView):
     """Admin view for the User model"""
     column_list = ('id', 'username', 'name', 'surname', 'email', 'role')
-    form_columns = ('id', 'username', 'password', 'role', 'name', 'surname', 'email')
+    form_columns = ('username', 'password', 'role', 'name', 'surname', 'email')
     form_extra_fields = {
         'password': PasswordField('Password')
     }
     column_searchable_list = ['username', 'email', 'name', 'surname']
-    column_sortable_list = ['username', 'name', 'email']
+    column_sortable_list = ['username', 'name', 'email', 'role', 'surname']
     column_filters = ['role', 'email']
     form_labels = {
         'username': 'Username',
@@ -27,6 +27,13 @@ class UserModelView(ModelView):
         'password': {
             'type': 'password'
         }
+    }
+
+    form_choices = {
+        'role': [
+            ('admin', 'Admin'),
+            ('user', 'User')
+        ]
     }
 
     def on_model_change(self, form, model, is_created):

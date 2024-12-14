@@ -8,7 +8,7 @@ class Unit(db.Model):
 
     __tablename__ = 'units'
 
-    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)  # Unique identifier for each unit
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)  # Unique identifier for each unit
     name = db.Column(db.String, nullable=False, unique=True)  # Name of the unit
     percentage_of_the_stock = db.Column(db.Numeric(precision=5, scale=2), nullable=True)  # Percentage of stock filled by this unit
 

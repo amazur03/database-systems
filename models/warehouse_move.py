@@ -9,7 +9,7 @@ class WarehouseMove(db.Model):
     
     __tablename__ = 'warehouse_moves'
 
-    id = db.Column(db.BigInteger, primary_key=True)  # Unique identifier for each move (primary key)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)  # Unique identifier for each move (primary key)
     move_type = db.Column(db.String, nullable=False)  # Type of movement, cannot be null
     order_date = db.Column(db.Date, nullable=False)  # Order date, cannot be null
     implementation_date = db.Column(db.Date, nullable=False)  # Implementation date, cannot be null

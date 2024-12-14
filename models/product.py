@@ -9,7 +9,7 @@ class Product(db.Model):
     
     __tablename__ = 'products'
 
-    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)  # Unique identifier for each product (primary key)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)  # Unique identifier for each product (primary key)
     name = db.Column(db.String, nullable=False)  # Name of the product, cannot be null
     unit_id = db.Column(db.BigInteger, db.ForeignKey('units.id'), nullable=False)  # Foreign key referencing the units table
     max_stock = db.Column(db.BigInteger, nullable=False)  # Maximum stock quantity, cannot be null
