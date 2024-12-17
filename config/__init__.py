@@ -3,8 +3,8 @@ from flask_migrate import Migrate
 from models import db
 from flask_admin import Admin, AdminIndexView, expose
 from models import Unit, Product, User, WarehouseMove, WarehouseMoveProduct, Inventory, InventoryProduct
-#from admin_view import ProductModelView, UnitModelView, UserModelView, WarehouseMoveModelView, WarehouseMoveProductModelView, UserModelView, InventoryModelView, InventoryProductModelView
-#from controller_view import ControllerInventoryProductModelView, ControllerInventoryModelView, ControllerWarehouseMoveModelView, ControllerWarehouseMoveProductModelView
+from admin_view import ProductModelView, UnitModelView, UserModelView, WarehouseMoveModelView, WarehouseMoveProductModelView, UserModelView, InventoryModelView, InventoryProductModelView
+from controller_view import ControllerInventoryProductModelView, ControllerInventoryModelView, ControllerWarehouseMoveModelView, ControllerWarehouseMoveProductModelView
 from warehouseman_view import WarehousemanWarehouseMoveModelView, WarehousemanWarehouseMoveProductModelView, WarehousemanProductModelView
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 import logging
@@ -41,9 +41,9 @@ class MyAdminIndexView(AdminIndexView):
     @login_required
     def index(self):
         return super(MyAdminIndexView, self).index()
-'''
-def configure_flask_admin(app):
-    admin = Admin(app, name='Admin Panel')  # The 'Management Panel' will be the name displayed in the admin panel
+
+def configure_admin_panel(app):
+    admin = Admin(app, name='Admin Panel', endpoint='admin', url='/admin')  # The 'Management Panel' will be the name displayed in the admin panel
     admin.add_view(UserModelView(User, db.session, endpoint='admin_user', name='Users', category='Users Menagment'))
     admin.add_view(ProductModelView(Product, db.session, endpoint='admin_product', name='Product', category='Product Menagment'))
     admin.add_view(UnitModelView(Unit, db.session, endpoint='admin_unit', name='Unit', category='Product Menagment'))
@@ -51,19 +51,19 @@ def configure_flask_admin(app):
     admin.add_view(WarehouseMoveProductModelView(WarehouseMoveProduct, db.session, endpoint='admin_warehous_move_prod', name='Warehous Moves Products', category='Warehouse Menagment'))
     admin.add_view(InventoryModelView(Inventory, db.session, endpoint='admin_inventory', name='Inventory', category='Inventory Menagment'))
     admin.add_view(InventoryProductModelView(InventoryProduct, db.session, endpoint='admin_inventory_product', name='Inventory Products', category='Inventory Menagment'))
-    admin.add_view(OperationLogModelView(OperationLog, db.session, name='Logi Operacji', category='Logowanie'))
-'''
-'''
-def configure_flask_admin(app):
-    controller = Admin(app, name='Controller Panel')  # The 'Management Panel' will be the name displayed in the admin panel
+    #admin.add_view(OperationLogModelView(OperationLog, db.session, name='Logi Operacji', category='Logowanie'))
+
+def configure_controller_panel(app):
+    controller = Admin(app, name='Controller Panel', endpoint='controller', url='/controller')  # The 'Management Panel' will be the name displayed in the admin panel
     controller.add_view(ControllerWarehouseMoveModelView(WarehouseMove, db.session, endpoint='controller_warehous_move', name='Warehouse Moves', category='Warehouse Menagment'))
     controller.add_view(ControllerWarehouseMoveProductModelView(WarehouseMoveProduct, db.session, endpoint='controller_warehous_move_prod', name='Warehous Moves Products', category='Warehouse Menagment'))
     controller.add_view(ControllerInventoryModelView(Inventory, db.session, endpoint='controller_admin_inventory', name='Inventory', category='Inventory Menagment'))
     controller.add_view(ControllerInventoryProductModelView(InventoryProduct, db.session, endpoint='controller_inventory_product', name='Inventory Products', category='Inventory Menagment'))
     #controller.add_view(OperationLogModelView(OperationLog, db.session, name='Logi Operacji', category='Logowanie'))
-'''
-def configure_flask_admin(app):
-    warehouseman = Admin(app, name='Warehouseman Panel')  # The 'Management Panel' will be the name displayed in the admin panel
+
+
+def configure_warehouseman_panel(app):
+    warehouseman = Admin(app, name='Warehouseman Panel', endpoint='warehouseman', url='/warehouseman')  # The 'Management Panel' will be the name displayed in the admin panel
     warehouseman.add_view(WarehousemanWarehouseMoveModelView(WarehouseMove, db.session, endpoint='warehouseman_warehous_move', name='Warehouse Moves', category='Warehouse Menagment'))
     warehouseman.add_view(WarehousemanWarehouseMoveProductModelView(WarehouseMoveProduct, db.session, endpoint='warehouseman_warehous_move_prod', name='Warehous Moves Products', category='Warehouse Menagment'))
     warehouseman.add_view(WarehousemanProductModelView(Product, db.session, endpoint='warehouseman_product', name='Product', category='Product Menagment'))
@@ -87,7 +87,9 @@ def create_app():
         register_extensions(app)
 
         # Build admin panel from flask-admin
-        configure_flask_admin(app)
+        configure_admin_panel(app)
+        configure_controller_panel(app)
+        configure_warehouseman_panel(app)
 
         # Add routes for login/logout and product addition
         #add_auth_routes(app)
