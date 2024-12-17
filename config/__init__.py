@@ -92,7 +92,7 @@ def create_app():
         configure_warehouseman_panel(app)
 
         # Add routes for login/logout and product addition
-        #add_auth_routes(app)
+        add_auth_routes(app)
         #add_product_routes(app)  # To będzie nowa funkcja, którą trzeba dodać
 
         app.logger.info('App created successfully')
@@ -102,19 +102,32 @@ def create_app():
         raise
 
 def add_auth_routes(app):
-    # Simple login page
     @app.route('/login', methods=['GET', 'POST'])
     def login():
         if request.method == 'POST':
             username = request.form['username']
             password = request.form['password']
-            user = User.query.filter_by(username=username, password=password).first()  # Note: Replace with hashed password checking
-            if user:
+            
+            # Wyszukiwanie użytkownika w bazie danych
+            user = User.query.filter_by(username=username, password=password).first()
+            
+            if user:  # Jeśli użytkownik istnieje
                 login_user(user)
-                return redirect(url_for('admin.index'))
-            else:
-                return 'Invalid username or password', 401
-
+                
+                # Przekierowanie na podstawie roli użytkownika
+                if user.role == 'admin':
+                    return redirect(url_for('admin.index'))
+                elif user.role == 'controller':
+                    return redirect(url_for('controller.index'))
+                elif user.role == 'warehouseman':
+                    return redirect(url_for('warehouseman.index'))
+                else:
+                    return 'Nieznana rola użytkownika', 403
+            
+            # Błędne dane logowania
+            return 'Invalid username or password', 401
+        
+        # Formularz logowania
         return render_template_string('''
             <form method="POST">
                 <input type="text" name="username" placeholder="Username" required>
