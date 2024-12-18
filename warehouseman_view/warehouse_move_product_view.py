@@ -11,7 +11,7 @@ class WarehousemanWarehouseMoveProductModelView(ModelView):
     form_columns = ('warehouse_move', 'product', 'quantity')
     column_filters = ['warehouse_move.move_type', 'product.name']
     column_searchable_list = ['warehouse_move.move_type', 'product.name']
-    column_sortable_list = ['warehouse_move.move_type', 'product.name', 'quantity']
+    column_sortable_list = ['id', 'warehouse_move.move_type', 'product.name', 'quantity']
     form_extra_fields = {
         'warehouse_move': QuerySelectField(
             'Warehouse Move',
@@ -39,6 +39,13 @@ class WarehousemanWarehouseMoveProductModelView(ModelView):
         'quantity': {
             'validators': [validators.InputRequired(), validators.NumberRange(min=1)]
         }
+    }
+
+    column_labels = {
+        'id': 'ID',
+        'warehouse_move.move_type': 'Move Type',
+        'product.name': 'Product Name',
+        'quantity': 'Quantity'
     }
 
     def on_model_change(self, form, model, is_created):

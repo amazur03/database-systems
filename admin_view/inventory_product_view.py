@@ -21,7 +21,7 @@ class InventoryProductModelView(ModelView):
     column_filters = ['inventory.id', 'product.name', 'user.username']
 
     # Columns that are sortable
-    column_sortable_list = ['inventory.id', 'product.name', 'counted_quantity', 'difference']
+    column_sortable_list = ['id', 'inventory', 'product', 'counted_quantity', 'difference', 'user']
 
     # Extra fields for relationships with other models (Inventory, Product, and User)
     form_extra_fields = {
@@ -57,6 +57,13 @@ class InventoryProductModelView(ModelView):
         'counted_quantity': {
             'validators': [validators.InputRequired(), validators.NumberRange(min=0, message="Quantity must be greater than or equal to 0.")]
         }
+    }
+    
+    column_labels = {
+        'id': 'ID',
+        'warehouse_move.move_type': 'Move Type',
+        'product.name': 'Product Name',
+        'quantity': 'Quantity'
     }
 
     # Logic before saving changes to the model

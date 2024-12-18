@@ -10,7 +10,17 @@ class ControllerInventoryModelView(ModelView):
     form_columns = ('description', 'date')
     column_filters = ['date']
     column_searchable_list = ['date']
-    column_sortable_list = ['date']
+    column_sortable_list = ['id', 'description', 'date']
+
+    column_labels = {
+        'id': 'ID',
+        'description': 'Description',
+        'date': 'Date'
+    }
+
+    can_create = True
+    can_edit = True
+    can_delete = False
 
     def is_accessible(self):
         # Check if the current user is authenticated and has 'admin' role

@@ -11,7 +11,7 @@ class ControllerWarehouseMoveProductModelView(ModelView):
     form_columns = ('warehouse_move', 'product', 'quantity')
     column_filters = ['warehouse_move.move_type', 'product.name']
     column_searchable_list = ['warehouse_move.move_type', 'product.name']
-    column_sortable_list = ['warehouse_move.move_type', 'product.name', 'quantity']
+    column_sortable_list = ['id', 'warehouse_move.move_type', 'product.name', 'quantity']
     form_extra_fields = {
         'warehouse_move': QuerySelectField(
             'Warehouse Move',
@@ -41,6 +41,17 @@ class ControllerWarehouseMoveProductModelView(ModelView):
         }
     }
 
+    column_labels = {
+        'id': 'ID',
+        'warehouse_move.move_type': 'Move Type',
+        'product.name': 'Product Name',
+        'quantity': 'Quantity'
+    }
+
+    can_create = True
+    can_edit = True
+    can_delete = False
+    
     def on_model_change(self, form, model, is_created):
         return super(ControllerWarehouseMoveProductModelView, self).on_model_change(form, model, is_created)
 

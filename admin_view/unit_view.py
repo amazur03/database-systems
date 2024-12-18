@@ -8,11 +8,17 @@ class UnitModelView(ModelView):
     form_columns = ('name', 'percentage_of_the_stock')
     column_filters = ['name']
     column_searchable_list = ['name']
+    column_sortable_list = ['id', 'name', 'percentage_of_the_stock']
     column_formatters = {
         'percentage_of_the_stock': lambda view, context, model, name: 
             f"{model.percentage_of_the_stock:.2f}%" if model.percentage_of_the_stock is not None else 'N/A'
     }
 
+    column_labels = {
+        'id': 'ID',
+        'name': 'Unit Name',
+        'percentage_of_the_stock': 'Percentage of Stock'
+    }
 
     def is_accessible(self):
         # Check if the current user is authenticated and has 'admin' role

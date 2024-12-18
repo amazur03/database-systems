@@ -17,7 +17,7 @@ class ProductModelView(ModelView):
         )
     }
     column_searchable_list = ['name']
-    column_sortable_list = ['name', 'current_stock']
+    column_sortable_list = ['id', 'name', 'unit.name', 'max_stock', 'min_stock', 'current_stock']
     column_formatters = {
         'unit.name': lambda view, context, model, name: f"{model.unit.name} ({model.unit.percentage_of_the_stock:.2f}%)" if model.unit else 'N/A'
     }
@@ -29,6 +29,16 @@ class ProductModelView(ModelView):
         'min_stock': 'Minimum Stock',
         'current_stock': 'Current Stock'
     }
+
+    column_labels = {
+        'id': 'ID',
+        'name': 'Product Name',
+        'unit.name': 'Unit',
+        'max_stock': 'Maximum Stock',
+        'min_stock': 'Minimum Stock',
+        'current_stock': 'Current Stock'
+    }
+
 
     def is_accessible(self):
         # Check if the current user is authenticated and has 'admin' role

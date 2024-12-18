@@ -11,7 +11,7 @@ class WarehousemanWarehouseMoveModelView(ModelView):
     form_columns = ('move_type', 'order_date', 'implementation_date', 'user')
     column_filters = ['move_type', 'order_date', 'implementation_date', 'user.username']
     column_searchable_list = ['move_type', 'user.username']
-    column_sortable_list = ['move_type', 'order_date', 'implementation_date']
+    column_sortable_list = ['id', 'move_type', 'order_date', 'implementation_date', 'user.username']
     form_extra_fields = {
         'user': QuerySelectField(
             'User',
@@ -37,6 +37,14 @@ class WarehousemanWarehouseMoveModelView(ModelView):
         'implementation_date': {
             'validators': [validators.InputRequired()]
         }
+    }
+
+    column_labels = {
+        'id': 'ID',
+        'move_type': 'Move Type',
+        'order_date': 'Order Date',
+        'implementation_date': 'Implementation Date',
+        'user.username': 'User'
     }
 
     def on_model_change(self, form, model, is_created):

@@ -21,7 +21,16 @@ class ControllerInventoryProductModelView(ModelView):
     column_filters = ['inventory.id', 'product.name', 'user.username']
 
     # Columns that are sortable
-    column_sortable_list = ['inventory.id', 'product.name', 'counted_quantity', 'difference']
+    column_sortable_list = ['id', 'inventory', 'product', 'counted_quantity', 'difference', 'user']
+
+    column_labels = {
+        'id': 'ID',
+        'inventory': 'Inventory',
+        'product': 'Product',
+        'counted_quantity': 'Counted Quantity',
+        'difference': 'Difference',
+        'user': 'User'
+    }
 
     # Extra fields for relationships with other models (Inventory, Product, and User)
     form_extra_fields = {
