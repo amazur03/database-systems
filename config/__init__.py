@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for, request, render_template_string
+from flask import Flask, redirect, url_for, request, render_template
 from flask_migrate import Migrate
 from models import db
 from flask_admin import Admin, AdminIndexView, expose
@@ -8,6 +8,7 @@ from controller_view import ControllerInventoryProductModelView, ControllerInven
 from warehouseman_view import WarehousemanWarehouseMoveModelView, WarehousemanWarehouseMoveProductModelView, WarehousemanProductModelView
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 import logging
+
 
 logging.basicConfig(level=logging.INFO)
 
@@ -76,7 +77,11 @@ def configure_app(app):
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, 
+                template_folder='../templates',
+                static_folder='../static')
+
+
 
     # Configure the app
     configure_app(app)
@@ -94,6 +99,7 @@ def create_app():
         # Add routes for login/logout and product addition
         add_auth_routes(app)
         #add_product_routes(app)  # To będzie nowa funkcja, którą trzeba dodać
+        create_admin_user(app)
 
         app.logger.info('App created successfully')
         return app
@@ -101,6 +107,31 @@ def create_app():
         app.logger.error(f'Error in creating app: {str(e)}')
         raise
 
+def create_admin_user(app):
+    try:
+        with app.app_context():
+            # Check if an admin user exists
+            if not User.query.filter_by(role="admin").first():
+                app.logger.info('No admin user found, creating default admin user.')
+                
+                # Create the default admin user with a hashed password
+                admin_user = User(
+                    username='admin',
+                    password='admin123!',  # Hash the password for security
+                    name="admin",
+                    surname="admin",
+                    email="admin@example.com",  # You can use a default email address
+                    role="admin"
+                )
+                
+                # Add the admin user to the session and commit to the database
+                db.session.add(admin_user)
+                db.session.commit()
+                
+                app.logger.info('Default admin user created.')
+    except Exception as e:
+        app.logger.error(f"Error creating default admin user: {str(e)}")
+        pass
 def add_auth_routes(app):
     @app.route('/login', methods=['GET', 'POST'])
     def login():
@@ -128,13 +159,7 @@ def add_auth_routes(app):
             return 'Invalid username or password', 401
         
         # Formularz logowania
-        return render_template_string('''
-            <form method="POST">
-                <input type="text" name="username" placeholder="Username" required>
-                <input type="password" name="password" placeholder="Password" required>
-                <button type="submit">Login</button>
-            </form>
-        ''')
+        return render_template('login.html')
 
     # Logout route
     @app.route('/logout')

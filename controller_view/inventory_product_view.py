@@ -3,6 +3,7 @@ from models import db, InventoryProduct, Inventory, Product, User
 from flask_admin.form.widgets import Select2Widget
 from wtforms_sqlalchemy.fields import QuerySelectField
 from wtforms import IntegerField, validators
+from flask_login import current_user
 
 class ControllerInventoryProductModelView(ModelView):
     """Admin view for the InventoryProduct model."""
@@ -69,7 +70,7 @@ class ControllerInventoryProductModelView(ModelView):
         model.difference = model.counted_quantity - product.current_stock
 
         # Proceed with saving the changes
-        return super(InventoryProductModelView, self).on_model_change(form, model, is_created)
+        return super(ControllerInventoryProductModelView, self).on_model_change(form, model, is_created)
 
     # Prefill the form with existing model data (e.g., for editing an existing inventory product)
     def _on_form_prefill(self, form, id):
@@ -81,4 +82,13 @@ class ControllerInventoryProductModelView(ModelView):
             form.product.data = inventory_product.product
             form.counted_quantity.data = inventory_product.counted_quantity
             form.user.data = inventory_product.user
-        return super(InventoryProductModelView, self)._on_form_prefill(form, id)
+        return super(ControllerInventoryProductModelView, self)._on_form_prefill(form, id)
+    
+    def is_accessible(self):
+        # Check if the current user is authenticated and has 'admin' role
+        return current_user.is_authenticated and current_user.role == 'controller'
+
+    def inaccessible_callback(self, name, **kwargs):
+        from flask import redirect, url_for
+        # Redirect unauthenticated or unauthorized users to the login page
+        return redirect(url_for('login'))

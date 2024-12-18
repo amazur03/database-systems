@@ -3,6 +3,7 @@ from models import db, InventoryProduct, Inventory, Product, User
 from flask_admin.form.widgets import Select2Widget
 from wtforms_sqlalchemy.fields import QuerySelectField
 from wtforms import IntegerField, validators
+from flask_login import current_user
 
 class InventoryProductModelView(ModelView):
     """Admin view for the InventoryProduct model."""
@@ -82,3 +83,12 @@ class InventoryProductModelView(ModelView):
             form.counted_quantity.data = inventory_product.counted_quantity
             form.user.data = inventory_product.user
         return super(InventoryProductModelView, self)._on_form_prefill(form, id)
+
+    def is_accessible(self):
+        # Check if the current user is authenticated and has 'admin' role
+        return current_user.is_authenticated and current_user.role == 'admin'
+
+    def inaccessible_callback(self, name, **kwargs):
+        from flask import redirect, url_for
+        # Redirect unauthenticated or unauthorized users to the login page
+        return redirect(url_for('login'))
