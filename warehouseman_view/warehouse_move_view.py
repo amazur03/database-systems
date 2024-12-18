@@ -47,6 +47,10 @@ class WarehousemanWarehouseMoveModelView(ModelView):
         'user.username': 'User'
     }
 
+    can_create = True
+    can_edit = False
+    can_delete = False
+
     def on_model_change(self, form, model, is_created):
         return super(WarehousemanWarehouseMoveModelView, self).on_model_change(form, model, is_created)
 

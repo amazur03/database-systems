@@ -2,6 +2,7 @@ from models import db # Import SQLAlchemy instance 'db' from the main app
 from sqlalchemy.orm import validates # Import SQLAlchemy's validation decorator
 import re # Import regex module to validate email format
 from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
 
 class User(db.Model, UserMixin):
     """
@@ -23,6 +24,13 @@ class User(db.Model, UserMixin):
     operation_log = db.relationship('OperationLog', back_populates='user')
     warehouse_move = db.relationship('WarehouseMove', back_populates='user')
     inventory_product = db.relationship('InventoryProduct', back_populates='user')
+
+    def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            if hasattr(self, key):
+                if key == 'password':
+                    value = generate_password_hash(value)
+                setattr(self, key, value)
 
     # Email verification using regex
     @validates('email')

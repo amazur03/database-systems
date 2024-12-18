@@ -4,6 +4,7 @@ from flask_admin.form.widgets import Select2Widget
 from wtforms_sqlalchemy.fields import QuerySelectField
 from wtforms import IntegerField, validators
 from flask_login import current_user
+from flask_admin.babel import gettext
 
 class ControllerWarehouseMoveProductModelView(ModelView):
     """Admin view for the WarehouseMoveProduct model."""
@@ -53,6 +54,30 @@ class ControllerWarehouseMoveProductModelView(ModelView):
     can_delete = False
     
     def on_model_change(self, form, model, is_created):
+        """Override the model change to update product stock."""
+        if is_created:
+            warehouse_move = model.warehouse_move
+            product = model.product
+
+            new_stock = product.current_stock
+            if warehouse_move.move_type == 'IN':
+                new_stock += model.quantity
+            elif warehouse_move.move_type == 'OUT':
+                new_stock -= model.quantity
+
+            if new_stock < 0:
+                raise ValueError(
+                    gettext(
+                        "Insufficient stock for product '%(product_name)s'. Current stock: %(current_stock)d, attempted to deduct: %(quantity)d.",
+                        product_name=product.name,
+                        current_stock=product.current_stock,
+                        quantity=model.quantity
+                    )
+                )
+
+            product.current_stock = new_stock
+            db.session.commit()
+
         return super(ControllerWarehouseMoveProductModelView, self).on_model_change(form, model, is_created)
 
     def _on_form_prefill(self, form, id):

@@ -8,6 +8,9 @@ from controller_view import ControllerInventoryProductModelView, ControllerInven
 from warehouseman_view import WarehousemanWarehouseMoveModelView, WarehousemanWarehouseMoveProductModelView, WarehousemanProductModelView
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 import logging
+from flask_admin.menu import MenuLink
+from werkzeug.security import generate_password_hash, check_password_hash
+
 
 
 logging.basicConfig(level=logging.INFO)
@@ -42,9 +45,12 @@ class MyAdminIndexView(AdminIndexView):
     @login_required
     def index(self):
         return super(MyAdminIndexView, self).index()
+    
+
 
 def configure_admin_panel(app):
     admin = Admin(app, name='Admin Panel', endpoint='admin', url='/admin')  # The 'Management Panel' will be the name displayed in the admin panel
+    admin.add_link(MenuLink(name='Logout', url='/logout'))
     admin.add_view(UserModelView(User, db.session, endpoint='admin_user', name='Users', category='Users Menagment'))
     admin.add_view(ProductModelView(Product, db.session, endpoint='admin_product', name='Product', category='Product Menagment'))
     admin.add_view(UnitModelView(Unit, db.session, endpoint='admin_unit', name='Unit', category='Product Menagment'))
@@ -56,6 +62,7 @@ def configure_admin_panel(app):
 
 def configure_controller_panel(app):
     controller = Admin(app, name='Controller Panel', endpoint='controller', url='/controller')  # The 'Management Panel' will be the name displayed in the admin panel
+    controller.add_link(MenuLink(name='Logout', url='/logout'))
     controller.add_view(ControllerWarehouseMoveModelView(WarehouseMove, db.session, endpoint='controller_warehous_move', name='Warehouse Moves', category='Warehouse Menagment'))
     controller.add_view(ControllerWarehouseMoveProductModelView(WarehouseMoveProduct, db.session, endpoint='controller_warehous_move_prod', name='Warehous Moves Products', category='Warehouse Menagment'))
     controller.add_view(ControllerInventoryModelView(Inventory, db.session, endpoint='controller_admin_inventory', name='Inventory', category='Inventory Menagment'))
@@ -65,6 +72,7 @@ def configure_controller_panel(app):
 
 def configure_warehouseman_panel(app):
     warehouseman = Admin(app, name='Warehouseman Panel', endpoint='warehouseman', url='/warehouseman')  # The 'Management Panel' will be the name displayed in the admin panel
+    warehouseman.add_link(MenuLink(name='Logout', url='/logout'))
     warehouseman.add_view(WarehousemanWarehouseMoveModelView(WarehouseMove, db.session, endpoint='warehouseman_warehous_move', name='Warehouse Moves', category='Warehouse Menagment'))
     warehouseman.add_view(WarehousemanWarehouseMoveProductModelView(WarehouseMoveProduct, db.session, endpoint='warehouseman_warehous_move_prod', name='Warehous Moves Products', category='Warehouse Menagment'))
     warehouseman.add_view(WarehousemanProductModelView(Product, db.session, endpoint='warehouseman_product', name='Product', category='Product Menagment'))
@@ -117,7 +125,7 @@ def create_admin_user(app):
                 # Create the default admin user with a hashed password
                 admin_user = User(
                     username='admin',
-                    password='admin123!',  # Hash the password for security
+                    password='admin123!',  # Haszowanie hasła
                     name="admin",
                     surname="admin",
                     email="admin@example.com",  # You can use a default email address
@@ -140,9 +148,9 @@ def add_auth_routes(app):
             password = request.form['password']
             
             # Wyszukiwanie użytkownika w bazie danych
-            user = User.query.filter_by(username=username, password=password).first()
+            user = User.query.filter_by(username=username).first()
             
-            if user:  # Jeśli użytkownik istnieje
+            if user and check_password_hash(user.password, password):  # Weryfikacja hasła
                 login_user(user)
                 
                 # Przekierowanie na podstawie roli użytkownika

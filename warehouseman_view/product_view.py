@@ -1,8 +1,9 @@
 from flask_admin.contrib.sqla import ModelView
-from models import db, Product, Unit
+from models import db, Product, Unit, WarehouseMove
 from flask_admin.form.widgets import Select2Widget
 from wtforms_sqlalchemy.fields import QuerySelectField
 from flask_login import current_user
+
 
 class WarehousemanProductModelView(ModelView):
     """Admin view for the Product model"""
@@ -37,6 +38,11 @@ class WarehousemanProductModelView(ModelView):
         'min_stock': 'Minimum Stock',
         'current_stock': 'Current Stock'
     }
+
+    can_create = True
+    can_edit = False
+    can_delete = False
+
     def is_accessible(self):
         # Check if the current user is authenticated and has 'admin' role
         return current_user.is_authenticated and current_user.role == 'warehouseman'
