@@ -12,7 +12,7 @@ class ControllerInventoryProductModelView(ModelView):
     column_list = ('id', 'inventory', 'product', 'counted_quantity', 'difference', 'user')
 
     # Columns to be included in the add/edit form
-    form_columns = ('inventory', 'product', 'counted_quantity', 'user')
+    form_columns = ('inventory', 'product', 'counted_quantity')  # 'user' removed from here
 
     # Columns to be searchable in the list view
     column_searchable_list = ['inventory.id', 'product.name']
@@ -32,7 +32,7 @@ class ControllerInventoryProductModelView(ModelView):
         'user': 'User'
     }
 
-    # Extra fields for relationships with other models (Inventory, Product, and User)
+    # Extra fields for relationships with other models (Inventory and Product)
     form_extra_fields = {
         'inventory': QuerySelectField(
             'Inventory',
@@ -45,12 +45,6 @@ class ControllerInventoryProductModelView(ModelView):
             query_factory=lambda: db.session.query(Product).order_by(Product.name).all(),
             widget=Select2Widget(),
             get_label=lambda product: product.name
-        ),
-        'user': QuerySelectField(
-            'User',
-            query_factory=lambda: db.session.query(User).order_by(User.username).all(),
-            widget=Select2Widget(),
-            get_label=lambda user: user.username
         )
     }
 
@@ -70,6 +64,10 @@ class ControllerInventoryProductModelView(ModelView):
 
     # Logic before saving changes to the model
     def on_model_change(self, form, model, is_created):
+        # Assign the current user to the model
+        if is_created:
+            model.user = current_user
+        
         # Fetch product by its ID (this assumes the product is already selected in the form)
         product = model.product
         if not product:
@@ -90,7 +88,6 @@ class ControllerInventoryProductModelView(ModelView):
             form.inventory.data = inventory_product.inventory
             form.product.data = inventory_product.product
             form.counted_quantity.data = inventory_product.counted_quantity
-            form.user.data = inventory_product.user
         return super(ControllerInventoryProductModelView, self)._on_form_prefill(form, id)
     
     def is_accessible(self):
