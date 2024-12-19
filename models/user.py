@@ -21,7 +21,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String, unique=True, nullable=False)  # Email address, which must be unique and in a valid format
     role = db.Column(db.String(50), nullable=False, default='user')
 
-    operation_log = db.relationship('OperationLog', back_populates='user')
+    operation_logs = db.relationship('OperationLog', back_populates='user', cascade="all, delete-orphan")
     warehouse_move = db.relationship('WarehouseMove', back_populates='user')
     inventory_product = db.relationship('InventoryProduct', back_populates='user')
 

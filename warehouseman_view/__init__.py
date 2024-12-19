@@ -1,3 +1,4 @@
 from .product_view import WarehousemanProductModelView
 from .warehouse_move_view import WarehousemanWarehouseMoveModelView
 from .warehouse_move_product_view import WarehousemanWarehouseMoveProductModelView
+from .operation_log_view import OperationLogModelView

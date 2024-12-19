@@ -5,3 +5,4 @@ from .warehouse_move_view import WarehouseMoveModelView
 from .warehouse_move_product_view import WarehouseMoveProductModelView
 from .inventory_view import InventoryModelView
 from .inventory_product_view import InventoryProductModelView
+from .operation_log_view import OperationLogModelView

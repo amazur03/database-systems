@@ -2,10 +2,10 @@ from flask import Flask, redirect, url_for, request, render_template
 from flask_migrate import Migrate
 from models import db
 from flask_admin import Admin, AdminIndexView, expose
-from models import Unit, Product, User, WarehouseMove, WarehouseMoveProduct, Inventory, InventoryProduct
-from admin_view import ProductModelView, UnitModelView, UserModelView, WarehouseMoveModelView, WarehouseMoveProductModelView, UserModelView, InventoryModelView, InventoryProductModelView
-from controller_view import ControllerInventoryProductModelView, ControllerInventoryModelView, ControllerWarehouseMoveModelView, ControllerWarehouseMoveProductModelView
-from warehouseman_view import WarehousemanWarehouseMoveModelView, WarehousemanWarehouseMoveProductModelView, WarehousemanProductModelView
+from models import Unit, Product, User, WarehouseMove, WarehouseMoveProduct, Inventory, InventoryProduct, OperationLog
+from admin_view import ProductModelView, UnitModelView, UserModelView, WarehouseMoveModelView, WarehouseMoveProductModelView, UserModelView, InventoryModelView, InventoryProductModelView, OperationLogModelView
+from controller_view import ControllerInventoryProductModelView, ControllerInventoryModelView, ControllerWarehouseMoveModelView, ControllerWarehouseMoveProductModelView, OperationLogModelView
+from warehouseman_view import WarehousemanWarehouseMoveModelView, WarehousemanWarehouseMoveProductModelView, WarehousemanProductModelView, OperationLogModelView
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 import logging
 from flask_admin.menu import MenuLink
@@ -58,7 +58,7 @@ def configure_admin_panel(app):
     admin.add_view(WarehouseMoveProductModelView(WarehouseMoveProduct, db.session, endpoint='admin_warehous_move_prod', name='Warehous Moves Products', category='Warehouse Menagment'))
     admin.add_view(InventoryModelView(Inventory, db.session, endpoint='admin_inventory', name='Inventory', category='Inventory Menagment'))
     admin.add_view(InventoryProductModelView(InventoryProduct, db.session, endpoint='admin_inventory_product', name='Inventory Products', category='Inventory Menagment'))
-    #admin.add_view(OperationLogModelView(OperationLog, db.session, name='Logi Operacji', category='Logowanie'))
+    admin.add_view(OperationLogModelView(OperationLog, db.session, endpoint='admin_operation_log', name='Operation Logs', category='Logs'))
 
 def configure_controller_panel(app):
     controller = Admin(app, name='Controller Panel', endpoint='controller', url='/controller')  # The 'Management Panel' will be the name displayed in the admin panel
@@ -67,7 +67,7 @@ def configure_controller_panel(app):
     controller.add_view(ControllerWarehouseMoveProductModelView(WarehouseMoveProduct, db.session, endpoint='controller_warehous_move_prod', name='Warehous Moves Products', category='Warehouse Menagment'))
     controller.add_view(ControllerInventoryModelView(Inventory, db.session, endpoint='controller_admin_inventory', name='Inventory', category='Inventory Menagment'))
     controller.add_view(ControllerInventoryProductModelView(InventoryProduct, db.session, endpoint='controller_inventory_product', name='Inventory Products', category='Inventory Menagment'))
-    #controller.add_view(OperationLogModelView(OperationLog, db.session, name='Logi Operacji', category='Logowanie'))
+    controller.add_view(OperationLogModelView(OperationLog, db.session, endpoint='controller_operation_log', name='Operation Logs', category='Logs'))
 
 
 def configure_warehouseman_panel(app):
@@ -76,7 +76,7 @@ def configure_warehouseman_panel(app):
     warehouseman.add_view(WarehousemanWarehouseMoveModelView(WarehouseMove, db.session, endpoint='warehouseman_warehous_move', name='Warehouse Moves', category='Warehouse Menagment'))
     warehouseman.add_view(WarehousemanWarehouseMoveProductModelView(WarehouseMoveProduct, db.session, endpoint='warehouseman_warehous_move_prod', name='Warehous Moves Products', category='Warehouse Menagment'))
     warehouseman.add_view(WarehousemanProductModelView(Product, db.session, endpoint='warehouseman_product', name='Product', category='Product Menagment'))
-    #warehouseman.add_view(OperationLogModelView(OperationLog, db.session, name='Logi Operacji', category='Logowanie'))
+    warehouseman.add_view(OperationLogModelView(OperationLog, db.session, endpoint='warehouseman_operation_log', name='Operation Logs', category='Logs'))
 
 
 def configure_app(app):

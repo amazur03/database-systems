@@ -19,6 +19,7 @@ class Product(db.Model):
     inventory_product = db.relationship('InventoryProduct', back_populates='product')
     unit = db.relationship('Unit', back_populates='product', single_parent=True, cascade='all', passive_deletes=True)
     warehouse_move_product = db.relationship('WarehouseMoveProduct', back_populates='product')
+    operation_logs = db.relationship('OperationLog', back_populates='product', cascade='all, delete-orphan')
 
 
     def __repr__(self):

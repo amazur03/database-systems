@@ -15,7 +15,7 @@ class WarehouseMove(db.Model):
     implementation_date = db.Column(db.Date, nullable=False)  # Implementation date, cannot be null
     user_id = db.Column(db.BigInteger, db.ForeignKey('users.id'), nullable=False)  # Foreign key referencing the users table
 
-    operation_log = db.relationship('OperationLog', back_populates='warehouse_move')
+    operation_logs = db.relationship('OperationLog', back_populates='warehouse_move', cascade='all, delete-orphan')
     user = db.relationship('User', back_populates='warehouse_move')  # Relationship with the Users table
     warehouse_move_product = db.relationship('WarehouseMoveProduct', back_populates='warehouse_move', cascade="all, delete-orphan")
 

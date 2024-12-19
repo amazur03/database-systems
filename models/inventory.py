@@ -16,7 +16,7 @@ class Inventory(db.Model):
     inventory_product = db.relationship('InventoryProduct', back_populates='inventory')
 
     # Relationship to OperationLog
-    operation_log = db.relationship('OperationLog', back_populates='inventory')
+    operation_logs = db.relationship('OperationLog', back_populates='inventory', cascade='all, delete-orphan')
 
     def __repr__(self):
         """

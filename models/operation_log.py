@@ -11,19 +11,19 @@ class OperationLog(db.Model):
     
     __tablename__ = 'operation_logs'
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)  # Unique identifier for each operation log (primary key)
-    operation_type = db.Column(db.String, nullable=False)  # Type of operation, cannot be null
-    user_id = db.Column(db.BigInteger, db.ForeignKey('users.id'), nullable=False)  # Foreign key referencing the users table
-    warehouse_move_id = db.Column(db.BigInteger, db.ForeignKey('warehouse_moves.id'), nullable=True)  # Nullable foreign key referencing warehouse moves
-    inventory_id = db.Column(db.BigInteger, db.ForeignKey('inventory.id'), nullable=True)  # Nullable foreign key referencing inventory
-    previous_value = db.Column(db.BigInteger, nullable=False)  # Previous value, cannot be null
-    new_value = db.Column(db.BigInteger, nullable=False)  # New value, cannot be null
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)  # Timestamp of the operation, defaults to current time
-    details = db.Column(db.Text)  # Additional details for the operation
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    operation_type = db.Column(db.String, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    inventory_id = db.Column(db.Integer, db.ForeignKey('inventory.id'), nullable=False)
+    warehouse_move_id = db.Column(db.Integer, db.ForeignKey('warehouse_moves.id'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
+    details = db.Column(db.Text)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
-    user = db.relationship('User', back_populates='operation_log')  # Relationship with the Users table
-    warehouse_move = db.relationship('WarehouseMove', back_populates='operation_log')  # Relationship with the WarehouseMoves table
-    inventory = db.relationship('Inventory', back_populates='operation_log')  # Relationship with the Inventory table
+    user = db.relationship('User', back_populates='operation_logs')
+    inventory = db.relationship('Inventory', back_populates='operation_logs')
+    warehouse_move = db.relationship('WarehouseMove', back_populates='operation_logs')
+    product = db.relationship('Product', back_populates='operation_logs')
 
     def __repr__(self):
         """
