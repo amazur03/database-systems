@@ -107,22 +107,6 @@ def after_insert_user(mapper, connection, target):
     connection.execute(OperationLog.__table__.insert(), log_entry)
 
 
-@listens_for(User, 'after_update')
-def after_update_user(mapper, connection, target):
-    """Log operation after a User record is updated."""
-    user_id = getattr(current_user, 'id', None)
-    if not user_id:
-        return
-    log_entry = {
-        "operation_type": 'UPDATE',
-        "user_id": user_id,
-        "operation_model": 'User',
-        "operation_id": target.id,
-        "details": f"User updated: {target.username}",
-        "timestamp": datetime.utcnow()
-    }
-    connection.execute(OperationLog.__table__.insert(), log_entry)
-
 
 @listens_for(User, 'after_delete')
 def after_delete_user(mapper, connection, target):

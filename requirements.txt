@@ -2,7 +2,7 @@ Flask==3.0.0               # Web framework
 Flask-SQLAlchemy==3.0.5    # SQLAlchemy integration with Flask
 Flask-Migrate==4.0.5       # Database migration management
 SQLAlchemy==2.0.20         # Stable version of the SQLAlchemy ORM
-Werkzeug==3.0.0            # Middleware for Flask
+Werkzeug==2.2.3            # Middleware for Flask
 Flask-Admin==2.0.0a3       # Admin panel for Flask
 WTForms-SQLAlchemy==0.3    # WTForms integration with SQLAlchemy
 Flask-Login==0.6.2         # User authentication in Flask
