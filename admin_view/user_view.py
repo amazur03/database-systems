@@ -1,11 +1,13 @@
 from flask_admin.contrib.sqla import ModelView
-from models import db, User
+from models import db, User, OperationLog
 from flask_admin.form.widgets import Select2Widget
 from wtforms_sqlalchemy.fields import QuerySelectField
 from wtforms import PasswordField
 from wtforms import validators
 from flask_login import current_user
 from werkzeug.security import generate_password_hash
+from sqlalchemy.event import listens_for
+from datetime import datetime
 
 class UserModelView(ModelView):
     """Admin view for the User model"""
@@ -86,3 +88,54 @@ class UserModelView(ModelView):
         from flask import redirect, url_for
         # Redirect unauthenticated or unauthorized users to the login page
         return redirect(url_for('login'))
+
+# LISTENER FUNCTIONS
+@listens_for(User, 'after_insert')
+def after_insert_user(mapper, connection, target):
+    """Log operation after a User record is inserted."""
+    user_id = getattr(current_user, 'id', None)
+    if not user_id:
+        return
+    log_entry = {
+        "operation_type": 'INSERT',
+        "user_id": user_id,
+        "operation_model": 'User',
+        "operation_id": target.id,
+        "details": f"User created: {target.username}",
+        "timestamp": datetime.utcnow()
+    }
+    connection.execute(OperationLog.__table__.insert(), log_entry)
+
+
+@listens_for(User, 'after_update')
+def after_update_user(mapper, connection, target):
+    """Log operation after a User record is updated."""
+    user_id = getattr(current_user, 'id', None)
+    if not user_id:
+        return
+    log_entry = {
+        "operation_type": 'UPDATE',
+        "user_id": user_id,
+        "operation_model": 'User',
+        "operation_id": target.id,
+        "details": f"User updated: {target.username}",
+        "timestamp": datetime.utcnow()
+    }
+    connection.execute(OperationLog.__table__.insert(), log_entry)
+
+
+@listens_for(User, 'after_delete')
+def after_delete_user(mapper, connection, target):
+    """Log operation after a User record is deleted."""
+    user_id = getattr(current_user, 'id', None)
+    if not user_id:
+        return
+    log_entry = {
+        "operation_type": 'DELETE',
+        "user_id": user_id,
+        "operation_model": 'User',
+        "operation_id": target.id,
+        "details": f"User deleted: {target.username}",
+        "timestamp": datetime.utcnow()
+    }
+    connection.execute(OperationLog.__table__.insert(), log_entry)

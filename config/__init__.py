@@ -4,7 +4,7 @@ from models import db
 from flask_admin import Admin, AdminIndexView, expose
 from models import Unit, Product, User, WarehouseMove, WarehouseMoveProduct, Inventory, InventoryProduct, OperationLog
 from admin_view import ProductModelView, UnitModelView, UserModelView, WarehouseMoveModelView, WarehouseMoveProductModelView, UserModelView, InventoryModelView, InventoryProductModelView, OperationLogModelView
-from controller_view import ControllerInventoryProductModelView, ControllerInventoryModelView, ControllerWarehouseMoveModelView, ControllerWarehouseMoveProductModelView, OperationLogModelView
+from controller_view import ControllerInventoryProductModelView, ControllerInventoryModelView, ControllerWarehouseMoveModelView, ControllerWarehouseMoveProductModelView, OperationLogModelView, ControllerProductModelView
 from warehouseman_view import WarehousemanWarehouseMoveModelView, WarehousemanWarehouseMoveProductModelView, WarehousemanProductModelView, OperationLogModelView
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 import logging
@@ -63,12 +63,12 @@ def configure_admin_panel(app):
 def configure_controller_panel(app):
     controller = Admin(app, name='Controller Panel', endpoint='controller', url='/controller')  # The 'Management Panel' will be the name displayed in the admin panel
     controller.add_link(MenuLink(name='Logout', url='/logout'))
+    controller.add_view(ControllerProductModelView(Product, db.session, endpoint='controller_product', name='Product', category='Product Menagment'))
     controller.add_view(ControllerWarehouseMoveModelView(WarehouseMove, db.session, endpoint='controller_warehous_move', name='Warehouse Moves', category='Warehouse Menagment'))
     controller.add_view(ControllerWarehouseMoveProductModelView(WarehouseMoveProduct, db.session, endpoint='controller_warehous_move_prod', name='Warehous Moves Products', category='Warehouse Menagment'))
     controller.add_view(ControllerInventoryModelView(Inventory, db.session, endpoint='controller_admin_inventory', name='Inventory', category='Inventory Menagment'))
     controller.add_view(ControllerInventoryProductModelView(InventoryProduct, db.session, endpoint='controller_inventory_product', name='Inventory Products', category='Inventory Menagment'))
     controller.add_view(OperationLogModelView(OperationLog, db.session, endpoint='controller_operation_log', name='Operation Logs', category='Logs'))
-
 
 def configure_warehouseman_panel(app):
     warehouseman = Admin(app, name='Warehouseman Panel', endpoint='warehouseman', url='/warehouseman')  # The 'Management Panel' will be the name displayed in the admin panel

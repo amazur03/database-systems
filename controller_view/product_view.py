@@ -41,7 +41,7 @@ class ControllerProductModelView(ModelView):
 
     def is_accessible(self):
         # Check if the current user is authenticated and has 'admin' role
-        return current_user.is_authenticated and current_user.role == 'warehouseman'
+        return current_user.is_authenticated and current_user.role == 'controller'
 
     def inaccessible_callback(self, name, **kwargs):
         from flask import redirect, url_for
