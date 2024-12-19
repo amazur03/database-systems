@@ -13,10 +13,10 @@ class OperationLog(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     operation_type = db.Column(db.String, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    inventory_id = db.Column(db.Integer, db.ForeignKey('inventory.id'), nullable=False)
-    warehouse_move_id = db.Column(db.Integer, db.ForeignKey('warehouse_moves.id'), nullable=False)
-    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
+    inventory_id = db.Column(db.Integer, db.ForeignKey('inventory.id'), nullable=True)
+    warehouse_move_id = db.Column(db.Integer, db.ForeignKey('warehouse_moves.id'), nullable=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=True)
     details = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
