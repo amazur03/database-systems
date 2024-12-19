@@ -1,24 +1,17 @@
 from flask_admin.contrib.sqla import ModelView
 from models import db, WarehouseMove, User
 from flask_admin.form.widgets import Select2Widget
-from wtforms_sqlalchemy.fields import QuerySelectField
 from wtforms import SelectField, validators
 from flask_login import current_user
 
 class WarehousemanWarehouseMoveModelView(ModelView):
     """Admin view for the WarehouseMove model."""
     column_list = ('id', 'move_type', 'order_date', 'implementation_date', 'user.username')
-    form_columns = ('move_type', 'order_date', 'implementation_date', 'user')
+    form_columns = ('move_type', 'order_date', 'implementation_date')  # 'user' removed from here
     column_filters = ['move_type', 'order_date', 'implementation_date', 'user.username']
     column_searchable_list = ['move_type', 'user.username']
     column_sortable_list = ['id', 'move_type', 'order_date', 'implementation_date', 'user.username']
     form_extra_fields = {
-        'user': QuerySelectField(
-            'User',
-            query_factory=lambda: db.session.query(User).all(),
-            widget=Select2Widget(),
-            get_label=lambda user: user.username
-        ),
         'move_type': SelectField(
             'Move Type',
             choices=[('IN', 'IN'), ('OUT', 'OUT')],
@@ -52,6 +45,9 @@ class WarehousemanWarehouseMoveModelView(ModelView):
     can_delete = False
 
     def on_model_change(self, form, model, is_created):
+        # Assign the current user to the model
+        if is_created:
+            model.user = current_user
         return super(WarehousemanWarehouseMoveModelView, self).on_model_change(form, model, is_created)
 
     def _on_form_prefill(self, form, id):
