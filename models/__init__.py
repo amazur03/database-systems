@@ -1,9 +1,9 @@
 from flask_sqlalchemy import SQLAlchemy
 
-# Tworzenie instancji SQLAlchemy
+# Creating a SQLAlchemy instance
 db = SQLAlchemy()
 
-# Importowanie modeli
+# Importing models
 from .product import Product
 from .user import User
 from .unit import Unit

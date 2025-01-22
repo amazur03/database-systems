@@ -5,65 +5,97 @@ from wtforms_sqlalchemy.fields import QuerySelectField
 from wtforms import IntegerField, validators
 from flask_login import current_user
 
+
 class InventoryProductModelView(ModelView):
     """Admin view for the InventoryProduct model."""
 
     # Columns to be displayed in the list view (index view)
-    column_list = ('id', 'inventory', 'product', 'counted_quantity', 'difference', 'user')
+    column_list = (
+        "id",
+        "inventory",
+        "product",
+        "counted_quantity",
+        "difference",
+        "user",
+    )
 
     # Columns to be included in the add/edit form
-    form_columns = ('inventory', 'product', 'counted_quantity', 'user')
+    form_columns = ("inventory", "product", "counted_quantity", "user")
 
     # Columns to be searchable in the list view
-    column_searchable_list = ['inventory.id', 'product.name']
+    column_searchable_list = ["inventory.id", "product.name"]
 
     # Columns that can be filtered in the list view
-    column_filters = ['inventory.id', 'product.name', 'user.username']
+    column_filters = ["inventory.id", "product.name", "user.username"]
 
     # Columns that are sortable
-    column_sortable_list = ['id', 'inventory', 'product', 'counted_quantity', 'difference', 'user']
+    column_sortable_list = [
+        "id",
+        "inventory",
+        "product",
+        "counted_quantity",
+        "difference",
+        "user",
+    ]
 
     # Extra fields for relationships with other models (Inventory, Product, and User)
     form_extra_fields = {
-        'inventory': QuerySelectField(
-            'Inventory',
-            query_factory=lambda: db.session.query(Inventory).order_by(Inventory.date.desc()).all(),
+        "inventory": QuerySelectField(
+            "Inventory",
+            query_factory=lambda: db.session.query(Inventory)
+            .order_by(Inventory.date.desc())
+            .all(),
             widget=Select2Widget(),
-            get_label=lambda inventory: f"ID: {inventory.id} - {inventory.description} ({inventory.date})"
+            get_label=lambda inventory: f"ID: {inventory.id} - {inventory.description} ({inventory.date})",
         ),
-        'product': QuerySelectField(
-            'Product',
-            query_factory=lambda: db.session.query(Product).order_by(Product.name).all(),
+        "product": QuerySelectField(
+            "Product",
+            query_factory=lambda: db.session.query(Product)
+            .order_by(Product.name)
+            .all(),
             widget=Select2Widget(),
-            get_label=lambda product: product.name
+            get_label=lambda product: product.name,
         ),
-        'user': QuerySelectField(
-            'User',
+        "user": QuerySelectField(
+            "User",
             query_factory=lambda: db.session.query(User).order_by(User.username).all(),
             widget=Select2Widget(),
-            get_label=lambda user: user.username
-        )
+            get_label=lambda user: user.username,
+        ),
     }
 
     # Formatter for displaying product name and user in a readable format
     column_formatters = {
-        'user': lambda view, context, model, name: model.user.username if model.user else 'N/A',
-        'product': lambda view, context, model, name: model.product.name if model.product else 'N/A',
-        'inventory': lambda view, context, model, name: model.inventory.date.strftime('%Y-%m-%d') if model.inventory else 'N/A',
+        "user": lambda view, context, model, name: model.user.username
+        if model.user
+        else "N/A",
+        "product": lambda view, context, model, name: model.product.name
+        if model.product
+        else "N/A",
+        "inventory": lambda view, context, model, name: model.inventory.date.strftime(
+            "%Y-%m-%d"
+        )
+        if model.inventory
+        else "N/A",
     }
 
     # Custom validation for form fields
     form_args = {
-        'counted_quantity': {
-            'validators': [validators.InputRequired(), validators.NumberRange(min=0, message="Quantity must be greater than or equal to 0.")]
+        "counted_quantity": {
+            "validators": [
+                validators.InputRequired(),
+                validators.NumberRange(
+                    min=0, message="Quantity must be greater than or equal to 0."
+                ),
+            ]
         }
     }
-    
+
     column_labels = {
-        'id': 'ID',
-        'warehouse_move.move_type': 'Move Type',
-        'product.name': 'Product Name',
-        'quantity': 'Quantity'
+        "id": "ID",
+        "warehouse_move.move_type": "Move Type",
+        "product.name": "Product Name",
+        "quantity": "Quantity",
     }
 
     # Logic before saving changes to the model
@@ -72,12 +104,14 @@ class InventoryProductModelView(ModelView):
         product = model.product
         if not product:
             raise ValueError("Selected product does not exist.")
-        
+
         # Calculate the difference between counted and current stock
         model.difference = model.counted_quantity - product.current_stock
 
         # Proceed with saving the changes
-        return super(InventoryProductModelView, self).on_model_change(form, model, is_created)
+        return super(InventoryProductModelView, self).on_model_change(
+            form, model, is_created
+        )
 
     # Prefill the form with existing model data (e.g., for editing an existing inventory product)
     def _on_form_prefill(self, form, id):
@@ -93,9 +127,10 @@ class InventoryProductModelView(ModelView):
 
     def is_accessible(self):
         # Check if the current user is authenticated and has 'admin' role
-        return current_user.is_authenticated and current_user.role == 'admin'
+        return current_user.is_authenticated and current_user.role == "admin"
 
     def inaccessible_callback(self, name, **kwargs):
         from flask import redirect, url_for
+
         # Redirect unauthenticated or unauthorized users to the login page
-        return redirect(url_for('login'))
+        return redirect(url_for("login"))

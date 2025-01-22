@@ -1,51 +1,62 @@
-from models import db # Import SQLAlchemy instance 'db' from the main app
-from sqlalchemy.orm import validates # Import SQLAlchemy's validation decorator
-import re # Import regex module to validate email format
+from models import db  # Import SQLAlchemy instance 'db' from the main app
+from sqlalchemy.orm import validates  # Import SQLAlchemy's validation decorator
+import re  # Import regex module to validate email format
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+
 
 class User(db.Model, UserMixin):
     """
     User model for storing user details in the 'users' table.
-    This model includes fields such as username, password, name, surname, 
+    This model includes fields such as username, password, name, surname,
     email, and role_id, with email validation using regex.
     """
-    
-    __tablename__ = 'users'  # Defines the table name in the database
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)  # Unique identifier for each user (primary key)
-    username = db.Column(db.String, unique=True, nullable=False)  # Username, which must be unique and cannot be null
-    password = db.Column(db.String, nullable=False)  # Password, stored as a string, cannot be null
+    __tablename__ = "users"  # Defines the table name in the database
+
+    id = db.Column(
+        db.Integer, primary_key=True, autoincrement=True
+    )  # Unique identifier for each user (primary key)
+    username = db.Column(
+        db.String, unique=True, nullable=False
+    )  # Username, which must be unique and cannot be null
+    password = db.Column(
+        db.String, nullable=False
+    )  # Password, stored as a string, cannot be null
     name = db.Column(db.String, nullable=False)  # User's first name, cannot be null
     surname = db.Column(db.String, nullable=False)  # User's last name, cannot be null
-    email = db.Column(db.String, unique=True, nullable=False)  # Email address, which must be unique and in a valid format
-    role = db.Column(db.String(50), nullable=False, default='user')
+    email = db.Column(
+        db.String, unique=True, nullable=False
+    )  # Email address, which must be unique and in a valid format
+    role = db.Column(db.String(50), nullable=False, default="user")
 
-    operation_logs = db.relationship('OperationLog', back_populates='user', cascade="all, delete-orphan")
-    warehouse_move = db.relationship('WarehouseMove', back_populates='user')
-    inventory_product = db.relationship('InventoryProduct', back_populates='user')
+    operation_logs = db.relationship(
+        "OperationLog", back_populates="user", cascade="all, delete-orphan"
+    )
+    warehouse_move = db.relationship("WarehouseMove", back_populates="user")
+    inventory_product = db.relationship("InventoryProduct", back_populates="user")
 
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             if hasattr(self, key):
-                if key == 'password':
+                if key == "password":
                     value = generate_password_hash(value)
                 setattr(self, key, value)
 
     # Email verification using regex
-    @validates('email')
+    @validates("email")
     def validate_email(self, key, email):
         """
         Validates the email field to ensure it matches a standard email pattern.
         Raises a ValueError if the email format is invalid.
         """
         # Regex pattern for validating an email address
-        email_regex = r'^[\w\.-]+@[\w\.-]+\.\w+$'
-        
+        email_regex = r"^[\w\.-]+@[\w\.-]+\.\w+$"
+
         # Check if email matches the pattern
         if not re.match(email_regex, email):
             raise ValueError("Invalid email address format")
-        
+
         # Return the email if it passes validation
         return email
 

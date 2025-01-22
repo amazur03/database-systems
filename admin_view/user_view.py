@@ -9,41 +9,37 @@ from werkzeug.security import generate_password_hash
 from sqlalchemy.event import listens_for
 from datetime import datetime
 
+
 class UserModelView(ModelView):
     """Admin view for the User model"""
-    column_list = ('id', 'username', 'name', 'surname', 'email', 'role')
-    form_columns = ('username', 'password', 'role', 'name', 'surname', 'email')
-    form_extra_fields = {
-        'password': PasswordField('Password')
-    }
-    column_searchable_list = ['username', 'email', 'name', 'surname']
-    column_sortable_list = ['id', 'username', 'name', 'email', 'role', 'surname']
-    column_filters = ['role', 'email']
+
+    column_list = ("id", "username", "name", "surname", "email", "role")
+    form_columns = ("username", "password", "role", "name", "surname", "email")
+    form_extra_fields = {"password": PasswordField("Password")}
+    column_searchable_list = ["username", "email", "name", "surname"]
+    column_sortable_list = ["id", "username", "name", "email", "role", "surname"]
+    column_filters = ["role", "email"]
     form_labels = {
-        'username': 'Username',
-        'name': 'First Name',
-        'surname': 'Last Name',
-        'email': 'Email Address',
-        'role': 'Role',
-        'password': 'Password'
+        "username": "Username",
+        "name": "First Name",
+        "surname": "Last Name",
+        "email": "Email Address",
+        "role": "Role",
+        "password": "Password",
     }
-    form_widget_args = {
-        'password': {
-            'type': 'password'
-        }
-    }
+    form_widget_args = {"password": {"type": "password"}}
 
     form_choices = {
-         'role': [
-            ('admin', 'Admin'),
-            ('controller', 'Controller'),
-            ('warehouseman', 'Warehouseman')
+        "role": [
+            ("admin", "Admin"),
+            ("controller", "Controller"),
+            ("warehouseman", "Warehouseman"),
         ]
     }
 
     def on_model_change(self, form, model, is_created):
         if form.password.data:
-            if not is_created and not form.password.data.startswith("pbkdf2:sha256"):  
+            if not is_created and not form.password.data.startswith("pbkdf2:sha256"):
                 model.password = generate_password_hash(form.password.data)
             elif is_created:
                 model.password = generate_password_hash(form.password.data)
@@ -53,7 +49,6 @@ class UserModelView(ModelView):
         user = db.session.query(User).get(id)
         form.password.data = user.password
         return super(UserModelView, self)._on_form_prefill(form, id)
-
 
     def create_model(self, form):
         # Ensure password is provided during creation
@@ -79,47 +74,48 @@ class UserModelView(ModelView):
         self._on_model_change(form, model, False)
         self.session.commit()
         return model
-    
+
     def is_accessible(self):
         # Check if the current user is authenticated and has 'admin' role
-        return current_user.is_authenticated and current_user.role == 'admin'
+        return current_user.is_authenticated and current_user.role == "admin"
 
     def inaccessible_callback(self, name, **kwargs):
         from flask import redirect, url_for
+
         # Redirect unauthenticated or unauthorized users to the login page
-        return redirect(url_for('login'))
+        return redirect(url_for("login"))
+
 
 # LISTENER FUNCTIONS
-@listens_for(User, 'after_insert')
+@listens_for(User, "after_insert")
 def after_insert_user(mapper, connection, target):
     """Log operation after a User record is inserted."""
-    user_id = getattr(current_user, 'id', None)
+    user_id = getattr(current_user, "id", None)
     if not user_id:
         return
     log_entry = {
-        "operation_type": 'INSERT',
+        "operation_type": "INSERT",
         "user_id": user_id,
-        "operation_model": 'User',
+        "operation_model": "User",
         "operation_id": target.id,
         "details": f"User created: {target.username}",
-        "timestamp": datetime.utcnow()
+        "timestamp": datetime.utcnow(),
     }
     connection.execute(OperationLog.__table__.insert(), log_entry)
 
 
-
-@listens_for(User, 'after_delete')
+@listens_for(User, "after_delete")
 def after_delete_user(mapper, connection, target):
     """Log operation after a User record is deleted."""
-    user_id = getattr(current_user, 'id', None)
+    user_id = getattr(current_user, "id", None)
     if not user_id:
         return
     log_entry = {
-        "operation_type": 'DELETE',
+        "operation_type": "DELETE",
         "user_id": user_id,
-        "operation_model": 'User',
+        "operation_model": "User",
         "operation_id": target.id,
         "details": f"User deleted: {target.username}",
-        "timestamp": datetime.utcnow()
+        "timestamp": datetime.utcnow(),
     }
     connection.execute(OperationLog.__table__.insert(), log_entry)
